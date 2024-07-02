@@ -2,7 +2,7 @@ from enum import Enum, auto
 from math import sqrt
 
 import source_data
-import calc
+import calculations.Water_general.calc as calc
 
 PRESSURE_ATMOSPHERE_BAR = 1.01325
 TEMPERATURE_ATMOSPHERE_0 = 273.15
