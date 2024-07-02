@@ -22,3 +22,5 @@
   caption="Расчет бойлера по часам">
   
 
+
+https://petro-eng.ru/doc%20info/libr/tablica_cheveleva.pdf

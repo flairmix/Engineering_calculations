@@ -7,6 +7,7 @@ from .model import User, PartialUserDTO
 
 class UserController(Controller):
     path = "/users"
+    tags=["users"]
 
     @post()
     async def create_user(self, data: User) -> User: ...
