@@ -1,0 +1,84 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import pandas as pd
+import time
+import re
+from bs4 import BeautifulSoup
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+
+
+def get_page_rain(browser, city, Probability=1):
+    delay = 1
+    try:
+        if Probability == 1:
+            elem  =  browser.find_element(By.CLASS_NAME,  'input__control' ).clear()
+            elem  =  browser.find_element(By.CLASS_NAME,  'input__control' ).send_keys(city + Keys.RETURN)
+            # elem.send_keys(city + Keys.RETURN)
+            elem  =  browser.find_element(By.XPATH, '//*[@id="rain-place-search"]/div/ul/li[1]').click()
+            time.sleep(delay)
+            # elem.click()
+
+        elem  =  browser.find_element(By.XPATH, '//*[@id="rain-results-wrapper"]/div[1]').click()
+        time.sleep(delay/5)
+        # elem.click() 
+        elem  =  browser.find_element(By.XPATH, f'//*[@id="rain-results-wrapper"]/div[1]/ul/li[{Probability}]').click()
+        time.sleep(delay/3)
+        # elem.click()
+    except: 
+        print(f'{browser.current_url} not access - city {city}')
+
+    return BeautifulSoup(browser.page_source, 'html.parser')
+
+
+def rain_parse_q20(result_str):
+    for i in result_str[6:10]:
+        if not i.isdigit() and not i in [' ', '.']: 
+            print(f'fail in parse string q20 - \n {result_str}')
+            return 0
+        return float(result_str[6:10])
+
+
+def df_rain_q20(browser, city, columns):
+    list_result = []
+    for P in range (1, 9, 1):
+        soap_rain = get_page_rain(browser, city, P)
+        rain_result_main = soap_rain.find('b', attrs={"id":{"station__result"}})
+        list_result.append(rain_parse_q20(rain_result_main.text))
+    return pd.DataFrame([[city] + list_result[::-1]], columns=columns)
+
+
+def main():
+
+    options = webdriver.ChromeOptions()
+    # options.add_argument('headless')
+    browser = webdriver.Chrome('/Applications/Google Chrome', chrome_options=options)
+    
+    # tools from site
+    url_rain = 'https://www.vo-da.ru/tool/rain'
+    url_layer = 'https://www.vo-da.ru/tool/layer'
+
+    
+    #rain
+    driver_rain = browser.get(url_rain)
+
+    data_city_100 = pd.read_csv('city_100.csv')
+    columns_rain = ['city', 'P_1/3', 'P_1/2', 'P_1', 'P_2', 'P_5', 'P_10', 'P_20', 'P_50']
+    df_rain = pd.DataFrame(columns=columns_rain)
+
+    for city in data_city_100['city']:
+        df_rain = df_rain.append(df_rain_q20(browser, city, columns_rain))
+        print(df_rain.tail(1))
+
+
+    df_rain = df_rain.set_index('city')
+    df_rain = df_rain.drop(["Unnamed: 0"], axis=1)
+    # df_rain.to_csv('rain_q20.csv')
+
+
+
+if __name__ == "__main__":
+    main()
+
+
