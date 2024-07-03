@@ -1,7 +1,14 @@
+from pydantic import Field, ValidationError, validate_call
+from typing_extensions import Annotated
 
 
-def GCalh_to_kW(power_Gcal_h):
-    return power_Gcal_h * 1163
+@validate_call
+def GCalh_to_kW(power_Gcal_h: Annotated[float, Field(gt=0)] ) -> float:
+    try:
+        return power_Gcal_h * 1163
+    except ValidationError as exc:
+        return 0
+
 
 
 def kW_to_GCalh(power_kW):
