@@ -3,6 +3,8 @@ from litestar import Litestar, get
 from users_managment.controller import UserController
 from calculations.Water_general.controller import WaterCalcController
 from calculations.Sheveleva_tables.controller import ShevelevController
+from calculations.Steam_calc.controller import SteamPipeController
+
 
 @get("/")
 async def index() -> str:
@@ -16,5 +18,7 @@ async def get_book(book_id: int) -> dict[str, int]:
 
 app = Litestar(route_handlers=[UserController, 
                                WaterCalcController, 
-                               ShevelevController], 
+                               ShevelevController,
+                               SteamPipeController], 
                                debug=True)
+
