@@ -17,10 +17,10 @@ class RainController(Controller):
     path = "/rain_calc"
     tags=["rain_calc"]
 
-    @get("/rain_coeff_c")
+    @get("/city_rain_parameters")
     @validate_call
-    async def rain_coeff_c(self,
-                        city_input: Annotated[str, Field(min_length=1)],
+    async def rain_parameters(self,
+                        city_input: Annotated[str, Field(min_length=1)] = "Москва",
                         ) -> dict[str, float]:
         try:
             #finding city
