@@ -20,7 +20,7 @@ async def get_book(book_id: int) -> dict[str, int]:
 app = Litestar(route_handlers=[UserController, 
                                WaterCalcController, 
                                ShevelevController, 
-                               SteamPipeController
+                               SteamPipeController,
                                RainController], 
                                debug=True)
 
