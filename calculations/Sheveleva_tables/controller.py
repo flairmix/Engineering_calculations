@@ -24,7 +24,6 @@ class ShevelevController(Controller):
 
         try:
             velocity = round(10**6 *((Flow_l_s*3.6) / (diameter**2) / 2826), 2)
-            _lambda = 0
             if (pipe_type in ("steel_new", "cast_iron_new") and pipe_type is not None):
                 if (velocity >= 1.2):
                     # formula #6 - Shevelev book
@@ -46,8 +45,6 @@ class ShevelevController(Controller):
             return {"velocity m/s": velocity, 
                     "1000*i_mm/m": i_1000}
         
-
-
         except ValidationError as exc:
             return {"ValidationError": -1}
         
